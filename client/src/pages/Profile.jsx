@@ -44,16 +44,20 @@ export default function Profile() {
     );
   };
 
-  // firebase storage
-  /*{allow read;
-      allow write: if
-      request.resource.size < 2 * 1024 * 1024 && 
-      request.resource.contentType.matchs('image/.*')} */
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    try {
+    } catch (error) {}
+  };
 
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7"> Profile</h1>
-      <form className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           onChange={(e) => setFile(e.target.files[0])}
           type="file"
@@ -63,7 +67,7 @@ export default function Profile() {
         />
         <img
           onClick={(() => fileRef.current, click())}
-          src={formData.avatar || currentUser.avatar}
+          src={formData?.avatar || currentUser.avatar}
           alt="profile"
           className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2"
         />
@@ -86,20 +90,25 @@ export default function Profile() {
         <input
           type="text"
           placeholder="username"
+          defaultValue={currentUser.username}
           id="username"
           className="border p-3 rounded-lg"
+          onChange={handleChange}
         />
         <input
           type="email"
           placeholder="email"
           id="email"
+          defaultValue={currentUser.email}
           className="border p-3 rounded-lg"
+          onChange={handleChange}
         />
         <input
           type="text"
           placeholder="password"
           id="password"
           className="border p-3 rounded-lg"
+          onChange={handleChange}
         />
         <button className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:placeholder-opacity-95 disabled:opacity-80">
           update
