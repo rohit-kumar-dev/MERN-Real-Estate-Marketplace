@@ -25,6 +25,8 @@ export default function CreateListing() {
   });
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [error, setError] = usestate(false);
+  const [loading, setLoading] = useState(state);
   console.log(formData);
   const handleImageSubmit = (e) => {
     if (files.length > 0 && files.length + formData.ImageUrls.length < 7) {
@@ -114,10 +116,27 @@ export default function CreateListing() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-    } catch (error) {}
+      setLoading(true);
+      setError(false);
+      const res = await fetch("/api/listing/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      setLoading(false);
+      if (data.success === false) {
+        setError(data.message);
+      }
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
+    }
   };
   return (
     <main className="p-3 max-w-4xl mx-auto">
@@ -319,8 +338,9 @@ export default function CreateListing() {
             onClick={handleImageSubmit}
             className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
           >
-            Create Listing
+            {loading ? "Creating..." : "Create listing"}
           </button>
+          {error && <p className=" text-red-700 text-sm">{error} </p>}
         </div>
       </form>
     </main>
