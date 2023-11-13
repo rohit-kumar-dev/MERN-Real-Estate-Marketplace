@@ -6,8 +6,10 @@ import {
 } from "firebase/storage";
 import React, { useState } from "react";
 import { app } from "../firebase";
+import { useSelector } from "react-redux";
 
 export default function CreateListing() {
+  const { currentUser } = useSelector((state) => state.user);
   const [files, setFile] = useState([]);
   const [formData, setFormData] = useState({
     ImageUrls: [],
@@ -119,6 +121,8 @@ export default function CreateListing() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (formData.imageUrls.length < 1)
+        return setError("You must upload at least one image");
       setLoading(true);
       setError(false);
       const res = await fetch("/api/listing/create", {
@@ -127,6 +131,7 @@ export default function CreateListing() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
+        userRef: currentUser._id,
       });
       const data = await res.json();
       setLoading(false);
@@ -273,8 +278,8 @@ export default function CreateListing() {
               <input
                 type="number"
                 id="discountPrice"
-                min="1"
-                max="10"
+                min="50"
+                max="10000000"
                 required
                 className="p-3 border border-gray-300 rounded-10"
                 onChange={handleChange}
